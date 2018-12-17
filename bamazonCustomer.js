@@ -21,7 +21,7 @@ connection.connect(function(err) {
 function start() {
     connection.query("SELECT * FROM products", function(err, results) {
         if (err) throw err;
-        console.log(results);
+        // console.log(results);
     inquirer
     .prompt([
         {
@@ -42,7 +42,20 @@ function start() {
         message: "How many units would you like to buy?"
     }
  ]).then(function(answer){
-     console.log("test");
+    //  console.log(answer.howMany);
+    var chosenItem;
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].item_id.toString() === answer.whichID) {
+            chosenItem = results[i];
+          };
+        };
+        if (chosenItem.stock_quantity < answer.howMany){
+            console.log("Insufficient Quantity!");
+            start();
+        } else {
+            console.log("Order fulfilled!");
+
+        };
  });
 })
 };
@@ -51,7 +64,6 @@ function readProducts() {
     console.log("Showing all products...\n");
     connection.query("SELECT * FROM products", function(err, res) {
       if (err) throw err;
-      // Log all results of the SELECT statement
       console.log(res);
     });
   };
