@@ -26,7 +26,6 @@ function start() {
     .prompt([
         {
         name: "whichID",
-        message: "What is the ID of the product you would like to buy?",
         type: "list",
           choices: function() {
             var choiceArray = [];
@@ -35,6 +34,7 @@ function start() {
             }
             return choiceArray;
           },
+          message: "What is the ID of the product you would like to buy?",
     },
     {
         name: "howMany",
@@ -42,7 +42,6 @@ function start() {
         message: "How many units would you like to buy?"
     }
  ]).then(function(answer){
-    //  console.log(answer.howMany);
     var chosenItem;
         for (var i = 0; i < results.length; i++) {
           if (results[i].item_id.toString() === answer.whichID) {
@@ -54,7 +53,22 @@ function start() {
             start();
         } else {
             console.log("Order fulfilled!");
-
+            connection.query(
+                "UPDATE products SET ? WHERE ?",
+                [
+                  {
+                    stock_quantity: (chosenItem.stock_quantity - answer.howMany)
+                  },
+                  {
+                    item_id: chosenItem.item_id
+                  }
+                ],
+                function(error) {
+                  if (error) throw err;
+                  console.log(`Your purchase cost is ${(chosenItem.price)*(answer.howMany)}`)
+                  start();
+                }
+              );
         };
  });
 })
