@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var cTable = require("console.table");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -78,6 +79,12 @@ function readProducts() {
     console.log("Showing all products...\n");
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
-        console.log(res);
+        // console.log(res);
+        //         for (var i = 0; i < res.length; i++) {
+        //             var string = JSON.stringify(res[i]);
+        //             console.log(JSON.parse(string));
+        //             console.log("-------------------------------");
+        // };
+        console.table(res);
     });
 };
